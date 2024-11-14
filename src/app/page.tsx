@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Header from "../component/Header";
 import Hero from "../component/Hero";
 import Stats from "../component/Stats";
