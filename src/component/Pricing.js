@@ -1,7 +1,4 @@
-import Image from "next/image";
-import openai5002 from "../../public/images/openai5002.jpg";
-import zenefit from "../../public/images/zenefit.png";
-import raycat from "../../public/images/raycat.png";
+
 
 export default function Pricing() {
     {/* paragraphe */}

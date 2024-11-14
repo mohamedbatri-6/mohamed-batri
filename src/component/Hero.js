@@ -1,5 +1,4 @@
-import Image from "next/image";
-import ori1 from "../../public/images/ori1.png";
+
 export default function Hero() {
     return (
       <section className=" bg-teal-800 text-white text-center py-20 rounded-2xl"
