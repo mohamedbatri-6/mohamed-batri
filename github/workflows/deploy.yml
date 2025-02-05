@@ -1,34 +1,34 @@
 name: Deploy Next.js App
 
 on:
-  push:
-    branches:
-      - master
+push:
+  branches:
+    - master
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+deploy:
+  runs-on: ubuntu-latest
 
-    steps:
-      - name: Récupérer le code
-        uses: actions/checkout@v3
+  steps:
+    - name: Récupérer le code
+      uses: actions/checkout@v3
 
-      - name: Ajouter la clé SSH privée et configurer SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 54.211.78.205 >> ~/.ssh/known_hosts  # Remplacer par ton IP
+    - name: Ajouter la clé SSH privée et configurer SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 54.211.78.205 >> ~/.ssh/known_hosts  # Remplacer par ton IP
 
-      - name: Vérifier la connexion SSH
-        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@54.211.78.205 "echo 'Connexion SSH réussie'"
+    - name: Vérifier la connexion SSH
+      run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@54.211.78.205 "echo 'Connexion SSH réussie'"
 
-      - name: Exécuter Ansible Playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          playbook: ansible/playbook.yml
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          inventory: |
-            [web]
-            54.211.78.205 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa
-          options: "-u ubuntu"
+    - name: Exécuter Ansible Playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        playbook: ansible/playbook.yml
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        inventory: |
+          [web]
+          54.211.78.205 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa
+        options: "-u ubuntu"
