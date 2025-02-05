@@ -3,45 +3,32 @@ name: Deploy Next.js App
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Récupérer le code
-      uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Exécuter Ansible
+      - name: Ajouter la clé SSH privée et configurer SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 54.211.78.205 >> ~/.ssh/known_hosts  # Remplacer par ton IP
+
+      - name: Vérifier la connexion SSH
+        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@54.211.78.205 "echo 'Connexion SSH réussie'"
+
+      - name: Exécuter Ansible Playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: ansible-playbook/deploy.yml
-          inventory: ansible-playbook/inventory.ini
-          key: ${{ secrets.-----BEGIN RSA PRIVATE KEY-----
-MIIEpQIBAAKCAQEAtpsQu4d/8nnotZBrvJ0jeQeVPhj99Pa+6vcrfrTGyp2pAvda
-FXBCCxxsCyjZX5uzyVJlFqO11RBzcjXC0agbX+KELnC6CkeD4gOZow0HsD+djHHi
-3fPGVsXBQoZ4yJCBl/PIEYmFk51M6kcJG0CGzbLAoXubKfzsumZZthUp/BRnOwXk
-Pg4xGkoNFlbQ+Tdy2S9z4380DFh/doQ5gU+1I6r+tlY8DNYSNAegms6zbU2ki8D8
-I5RmNdN7Ebd0PTminHiFUYjbBOYx/V6gj09Jxz+uBW1/np/5x7PgOc4SApSk+2VT
-1tr4bP2UJbsR8yr7GpoIPKapWBBUbu9vj2VZswIDAQABAoIBAQCHvXtRu6b7y22W
-UjYULkdpN57UW2WkzCsdpQD7HkzL3yj84HxhhWJCui0CmqoDrU2XMR2eF7IaITGA
-S8B3c1xuCYcysm9JJuI9h2mU0CHP/WoTNbFsRkNAy54e4rE0fl8nYntttenK0lqT
-qJx3Wp8al28kWyr7ql0bLuwvM0pTbGFJ5JhoMj4uBDMTwunH1dIG4+ArEpQ8F+S2
-VQsyV9MYrskQV2Nu3QcYNPOZe8d0Cqs0SekMkse/VhYz15lW0zYwjMIrUeJc2nOu
-uSSTmZ+aGKzmZabsiovS9L8GJpwLxTsOXJggtG7l0xi9nH5XOhYt0bFJKytqyzCn
-rogNOxZhAoGBAOXHP6zMnM09iYoYDV7sMEgZ4B5aCKGxyiZ6c/Ej2PjfhDY5CeFJ
-ByF+Ya6TQJuRh6Hdqj9fBDR5zPfJaZWsp7UIy6J/YXpE4G8wRYYwgXJ3ok5O1oK4
-fDr99T+YbxXEc/jHkAWrDpyxBjJPbF2CTEeRWZY4e6sECoC438XynLbxAoGBAMtx
-twn9aEwX41G6ubkKMp62bgL2cyo5voEDyhyt+RxlRKMh0yyEBc+//qico1rHoYu8
-qkaVfcY9qccgxz/+Ep50vDCIyRTdyBkMRHQv+M22PYPfFKfaiNNPkmcgj6OLVIyi
-L8qGeQuB270e2BEMY9CUg3cNF/EMp1JVG8FdlULjAoGBAJTZ0YcIed9/KNVbpXXD
-fbeHg6dF3eeZfAIXO3qQJWN7sHNL2fmmTEdHTtI/tA/TY9DY/wvUaq3v5XbzdEGw
-umfNTdVzvVruuZFt7Ov0Cjd0BqHB8rZ1+oxgrfpHrlakkBgudz8kw+9/wirfRq0A
-1pdaMnXdG0f68y7WFKhv9VORAoGAEMwTw8RjbxztzNqw6OE5qrb/QEle2tanrvlE
-H7gRgFGwKBPr3poL7Mo6WWuNZTpkUShDms5O8yY2NVW0fckZenHC8/LnP0zMb5z+
-reUkEsAANjod93nooCHKwa8DjQo88duWPI97wQJ4xRWd21J9j0Qj0pmHJ4TW78pN
-H1r9rucCgYEAobZWMHdBPCwy+Ll3cVAGTngYr9M98V0gfo5znvXjm4edj/ec2tod
-zlBkZibopGQeMJk2iLoePas4fOrHdHSThBqge9KEjg0Z/tN8NQxLjnztRCnqzJhz
-mSKrUc28/kUThJ1tUM17u+/i57fxGcu9bVHpCszfBJRd5ucLOd8ecpA=
------END RSA PRIVATE KEY-----}}
-remote_user: user
+          playbook: ansible/playbook.yml
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          inventory: |
+            [web]
+            54.211.78.205 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa
+          options: "-u ubuntu"
