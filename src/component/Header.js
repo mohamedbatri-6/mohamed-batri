@@ -7,7 +7,7 @@ export default function Header() {
       <ul className="flex space-x-6">
         <li><Link href="">Products</Link></li>
         <li><Link href="">Solutions</Link></li>
-        <li><Link href="">Partners</Link></li>
+        <li><Link href="">PartnersSS</Link></li>
         <li><Link href="">PricingSS</Link></li>
       </ul>
       <div className="space-x-4">
