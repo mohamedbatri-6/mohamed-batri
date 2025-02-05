@@ -8,7 +8,7 @@ export default function Header() {
         <li><Link href="">Products</Link></li>
         <li><Link href="">Solutions</Link></li>
         <li><Link href="">Partners</Link></li>
-        <li><Link href="">Pricing</Link></li>
+        <li><Link href="">PricingSS</Link></li>
       </ul>
       <div className="space-x-4">
         <button className="text-gray-700">Login</button>
