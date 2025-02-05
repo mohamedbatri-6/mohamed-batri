@@ -1,9 +1,9 @@
- name: Déploiement de l’application Next.js
+- name: Déploiement de l’application Next.js
   hosts: webserver
   become: yes
   vars:
     repo_url: "https://github.com/mohamedbatri-6/mohamed-batri.git"
-    app_dir: "/home/vbox/mohamed-batri"
+    app_dir: "/home/ubuntu/mohamed-batri"
   tasks:
     - name: Mettre à jour le système
       apt:
